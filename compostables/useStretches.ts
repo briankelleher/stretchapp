@@ -1,10 +1,10 @@
 import { Stretch } from "~/models/Stretch"
 
-export const useStretches = (sheet_data : Array<Array<String>> = []) => {
-    console.log(sheet_data)
-    return useState<Array<Stretch>>('stretches', () => {
-        return sheet_data.map(x => new Stretch(x))
-    })
+export function useStretches() {
+    const stretches = useState<Array<Stretch>>('stretches', () => [])
+    return {
+        stretches
+    }
 }
 
 export const useBodyParts = (stretches = useStretches()) => {
