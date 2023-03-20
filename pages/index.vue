@@ -4,14 +4,32 @@
             <v-col cols="12">
                 <p>Select Stretching Routine:</p>
                 <div class="routine-list">
-                    <RoutineListItem :routine="s.routine" :body-parts="s.name" v-for="(s, i) in enabledStretches" :key="`stretch-listing-${i}`" />
+                    <RoutineListItem :routine="r" v-for="(r, i) in routines" :key="`stretch-listing-${i}`" />
                 </div>
+
+                <v-row justify="center" class="mt-4">
+                    <v-col cols="12" md="6">
+                        <v-text-field
+                            v-model="restTimer"
+                            type="number"
+                            style="width: 100px"
+                            density="compact"
+                            hide-details
+                            label="Rest Interval Seconds"
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+
+                
             </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script setup>
-import { useEnabledStretches } from '~/compostables/useStretches'
-const enabledStretches = useEnabledStretches()
+import { useStretchesStore } from '~/stores/stretches'
+import { storeToRefs } from 'pinia'
+const store = useStretchesStore()
+const { restTimer, routines } = storeToRefs(store)
 </script>

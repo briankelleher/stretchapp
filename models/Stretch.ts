@@ -1,14 +1,14 @@
 export class Stretch {
-    name: String
-    timer: String
+    name: string
+    timer: number
     enabled: Boolean
-    bodyPart: String
-    routine: String
-    description: String
+    bodyPart: string
+    routine: string
+    description: string
     
-    constructor(row : Array<String>) {
+    constructor(row : Array<string>) {
         this.name = row[0]
-        this.timer = row[1]
+        this.timer = parseInt(row[1])
         this.enabled = row[2] === "x"
         this.bodyPart = row[3]
         this.routine = row[4]

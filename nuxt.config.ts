@@ -7,5 +7,8 @@ export default defineNuxtConfig({
     build: {
         transpile: ['vuetify']
     },
-    ssr: false
+    ssr: false,
+    modules: [
+        '@pinia/nuxt',
+    ],
 })
