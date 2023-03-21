@@ -25,7 +25,7 @@
         </v-row>
 
         <v-row justify="center" class="mt-5">
-            <v-col cols="4">
+            <v-col cols="6" md="4">
                 <v-btn @click="skipStretch" block color="warning" variant="outlined" size="large">Skip Stretch</v-btn>
             </v-col>
         </v-row>
