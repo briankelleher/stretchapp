@@ -1,13 +1,32 @@
 <template>
     <v-container>
-        <v-row>
-            <v-col>
-                <h1>Routine {{ $route.params.name }}</h1>
-                <v-btn @click="toggleStartState">{{ buttonActionText }}</v-btn>
-                <v-btn @click="reset">Reset</v-btn>
-                <p>{{ timerText }}</p>
-                <p v-if="currentStretch">Current Stretch: {{ currentStretch.name }}</p>
-                <p v-if="currentStretch">{{ currentStretch.description }}</p>
+        <v-btn variant="outlined" class="mb-6" prepend-icon="mdi-arrow-left" to="/">Back</v-btn>
+        <p class="text-uppercase font-weight-bold mb-6">Routine {{ $route.params.name }}</p>
+
+        <v-row class="mb-6">
+            <v-col><v-btn variant="outlined" @click="toggleStartState" block size="x-large">{{ buttonActionText }}</v-btn></v-col>
+            <v-col><v-btn variant="outlined" @click="reset" color="error" block size="x-large">Reset</v-btn></v-col>
+        </v-row>
+
+        <div v-if="currentStretch" class="mb-6 text-center">
+            <p>Stretch {{ currentStretchIndex + 1 }} / {{ stretches.length }}</p>
+            <h1 class="mb-1"><span v-if="onBreak">Upcoming: </span>{{ currentStretch.name }}</h1>
+            <p v-if="currentStretch.bodyPart">{{ currentStretch.bodyPart }}</p>
+            <p class="text-h5">{{ currentStretch.description }}</p>
+        </div>
+
+        <v-row justify="center">
+            <v-col cols="6" class="text-center">
+                <div :class="squareClass">
+                    <span class="square-text d-block text-h6 mb-3">{{ timerText }}</span>
+                    <span class="square-number d-block text-h1">{{ timerValue }}</span>
+                </div>
+            </v-col>
+        </v-row>
+
+        <v-row justify="center" class="mt-5">
+            <v-col cols="4">
+                <v-btn @click="skipStretch" block color="warning" variant="outlined" size="large">Skip Stretch</v-btn>
             </v-col>
         </v-row>
     </v-container>
@@ -21,7 +40,20 @@ import { useRoutine } from '~/composables/routine'
 const store = useStretchesStore()
 const route = useRoute()
 const { restTimer } = storeToRefs(store)
-const { timerText, start, reset, setStretches, currentStretch, buttonActionText, toggleStartState } = useRoutine(
+const { 
+    timerText,
+    timerValue,
+    stretches,
+    reset,
+    setStretches,
+    currentStretch,
+    buttonActionText,
+    toggleStartState,
+    onBreak,
+    squareClass,
+    skipStretch,
+    currentStretchIndex
+} = useRoutine(
     route.params.name,
     5,
     restTimer.value,
@@ -35,3 +67,20 @@ store.$subscribe((mutation) => {
     }
 })
 </script>
+
+<style>
+.square {
+    border: 3px solid grey;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 8px;
+}
+
+.square-warning {
+    border-color: rgb(251 175 79);
+}
+
+.square-success {
+    border-color: rgb(131 195 134);
+}
+</style>

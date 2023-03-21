@@ -2,11 +2,7 @@
   <div>
     <v-app>
       <v-container>
-        <v-row>
-          <v-col cols="12">
-            <h1 class="mb-3">Stretch App</h1>
-          </v-col>
-        </v-row>
+        <h1>Stretch App</h1>
       </v-container>
       <NuxtPage />
     </v-app>

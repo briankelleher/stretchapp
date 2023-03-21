@@ -11,7 +11,7 @@ const props = defineProps({
 })
 
 const name = computed(() => {
-    let n = `Routine ${props.routine}`
+    let n = `${props.routine}`
     if ( props.bodyParts ) {
         n += ` (${props.bodyParts})`
     }

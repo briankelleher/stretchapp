@@ -12,20 +12,30 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 5, provi
     const startTimerId = ref(0)
     const breakTimerId = ref(0)
     const stretchTimerId = ref(0)
-    const stretches = ref<Array<Stretch>>(provided_stretches)
+    const stretches = ref<Array<Stretch>>(shuffleArray(provided_stretches))
     const currentStretchIndex = ref(0)
 
+    function shuffleArray(array : Array<any>) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1))
+            var temp = array[i]
+            array[i] = array[j]
+            array[j] = temp
+        }
+        return array
+    }
+
     function setStretches(routines : Array<Stretch>) {
-        stretches.value = routines
+        stretches.value = shuffleArray(routines)
     }
 
     const timerText = computed(() => {
         if ( onBreak.value ) {
-            return `Rest Remaining: ${breakTimer.value}`
+            return `Rest Remaining`
         } else if ( onStretch.value ) {
-            return `Stretch! Time Remaining: ${stretchTimer.value}`
+            return `Stretch! Time Remaining`
         }
-        return `Starting In: ${startTimer.value}`
+        return `Starting In`
     })
 
     const currentStretch = computed(() => {
@@ -46,7 +56,36 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 5, provi
         }
     })
 
+    const timerValue = computed(() => {
+        if ( onBreak.value ) {
+            return breakTimer.value
+        } else if ( onStretch.value ) {
+            return stretchTimer.value
+        }
+        return startTimer.value
+    })
+
+    const squareClass = computed(() => {
+        let cl = `square`
+        if ( onBreak.value ) {
+            cl += ` square-warning`
+        } else if ( onStretch.value ) {
+            cl += ` square-success`
+        }
+        return cl
+    })
+
+    function clearTimers() {
+        clearTimeout(startTimerId.value)
+        startTimerId.value = 0
+        clearTimeout(breakTimerId.value)
+        breakTimerId.value = 0
+        clearTimeout(stretchTimerId.value)
+        stretchTimerId.value = 0
+    }
+
     function reset() {
+        paused.value = false
         started.value = false
         onBreak.value = false
         onStretch.value = false
@@ -54,65 +93,88 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 5, provi
         breakTimer.value = timer_break
         stretchTimer.value = 30
         currentStretchIndex.value = 0
-
-        clearTimeout(startTimerId.value)
-        startTimerId.value = 0
-
-        clearTimeout(breakTimerId.value)
-        breakTimerId.value = 0
-
-        clearTimeout(stretchTimerId.value)
-        stretchTimerId.value = 0
+        clearTimers()
     }
 
     function start() {
         started.value = true
+        clearTimers()
+        let start_date = new Date()
         startTimerId.value = setInterval(function() {
             if ( startTimer.value > 0 ) {
-                startTimer.value--
+                let now = new Date()
+                let diff = now.getTime() - start_date.getTime()
+                if ( diff > 1000 ) {
+                    startTimer.value--
+                    start_date = now
+                }
             } else {
                 clearInterval(startTimerId.value)
-                runStretch()
+                setTimeout(runStretch, 1000)
             }
-        }, 1000)
+        }, 100)
     }
 
     function runStretch(wasPaused = false) {
+        clearTimers()
         if ( stretches.value[currentStretchIndex.value] ) {
             const s = stretches.value[currentStretchIndex.value]
             if ( !wasPaused ) {
                 stretchTimer.value = s.timer
             }
+            let start_date = new Date()
             onStretch.value = true
             stretchTimerId.value = setInterval(function() {
-                console.log('Stretching timer interval')
                 if ( stretchTimer.value > 0 ) {
-                    stretchTimer.value--
+                    let now = new Date()
+                    let diff = now.getTime() - start_date.getTime()
+                    if ( diff > 1000 ) {
+                        stretchTimer.value--
+                        start_date = now
+                    }
                 } else {
                     clearInterval(stretchTimerId.value)
-                    currentStretchIndex.value++
-                    runBreak()
+                    setTimeout(function() {
+                        currentStretchIndex.value++
+                        runBreak()
+                    }, 1000)
                 }
-            }, 1000)
+            }, 100)
         } else {
             endStretching()
         }
     }
 
+    function skipStretch() {
+        clearTimers()
+        currentStretchIndex.value++
+        started.value = true
+        paused.value = false
+        runBreak()
+    }
+
     function runBreak() {
         onStretch.value = false
         onBreak.value = true
+        clearTimers()
+        let start_date = new Date()
         breakTimerId.value = setInterval(function() {
-            console.log('Break Time Interval')
             if ( breakTimer.value > 0 ) {
-                breakTimer.value--
+                let now = new Date()
+                let diff = now.getTime() - start_date.getTime()
+                if ( diff > 1000 ) {
+                    breakTimer.value--
+                    start_date = now
+                }
             } else {
                 clearInterval(breakTimerId.value)
-                onBreak.value = false
-                breakTimer.value = timer_break
-                runStretch()
+                setTimeout(function() {
+                    onBreak.value = false
+                    breakTimer.value = timer_break
+                    runStretch()
+                }, 1000)
             }
-        }, 1000)
+        }, 100)
     }
 
     function endStretching() {
@@ -151,11 +213,17 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 5, provi
     return {
         routine,
         timerText,
+        timerValue,
         currentStretch,
         buttonActionText,
         setStretches,
         start,
         reset,
-        toggleStartState
+        toggleStartState,
+        onBreak,
+        squareClass,
+        skipStretch,
+        currentStretchIndex,
+        stretches
     }
 }

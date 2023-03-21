@@ -1,27 +1,27 @@
 <template>
     <v-container>
         <v-row>
+            <v-col cols="12" md="3" class="d-flex align-center">
+                <label>Set Rest Interval:</label>
+            </v-col>
+            <v-col cols="4" md="3">
+                <v-text-field
+                    v-model="restTimer"
+                    type="number"
+                    hide-details
+                    variant="outlined"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="2" class="align-center d-flex">
+                <p>Seconds</p>
+            </v-col>
+        </v-row>
+        <v-row>
             <v-col cols="12">
                 <p>Select Stretching Routine:</p>
                 <div class="routine-list">
                     <RoutineListItem :routine="r" v-for="(r, i) in routines" :key="`stretch-listing-${i}`" />
                 </div>
-
-                <v-row justify="center" class="mt-4">
-                    <v-col cols="12" md="6">
-                        <v-text-field
-                            v-model="restTimer"
-                            type="number"
-                            style="width: 100px"
-                            density="compact"
-                            hide-details
-                            label="Rest Interval Seconds"
-                            variant="outlined"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-
-                
             </v-col>
         </v-row>
     </v-container>
