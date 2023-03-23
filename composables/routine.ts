@@ -12,7 +12,7 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 10, prov
     const startTimerId = ref(0)
     const breakTimerId = ref(0)
     const stretchTimerId = ref(0)
-    const stretches = ref<Array<Stretch>>(shuffleArray(provided_stretches))
+    const stretches = ref<Array<Stretch>>(prepareStretches(provided_stretches))
     const currentStretchIndex = ref(0)
 
     function shuffleArray(array : Array<any>) {
@@ -25,7 +25,7 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 10, prov
         return array
     }
 
-    function setStretches(routines : Array<Stretch>) {
+    function prepareStretches(routines : Array<Stretch>) {
         let rs = shuffleArray(routines)
         let ss : Array<Stretch> = []
         let body_parts : Array<string> = []
@@ -36,6 +36,11 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 10, prov
                 body_parts.push(element.bodyPart)
             }
         }
+        return ss
+    }
+
+    function setStretches(routines : Array<Stretch>) {
+        const ss = prepareStretches(routines)
         stretches.value = ss
     }
 
