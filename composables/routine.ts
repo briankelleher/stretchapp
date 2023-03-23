@@ -26,7 +26,17 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 5, provi
     }
 
     function setStretches(routines : Array<Stretch>) {
-        stretches.value = shuffleArray(routines)
+        let rs = shuffleArray(routines)
+        let ss : Array<Stretch> = []
+        let body_parts : Array<string> = []
+        for (let index = 0; index < rs.length; index++) {
+            const element = rs[index]
+            if ( !body_parts.includes(element.bodyPart) ) {
+                ss.push(element)
+                body_parts.push(element.bodyPart)
+            }
+        }
+        stretches.value = ss
     }
 
     const timerText = computed(() => {
