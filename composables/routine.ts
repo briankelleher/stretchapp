@@ -1,6 +1,6 @@
 import { Stretch } from '~/models/Stretch'
 
-export function useRoutine(name: string, timer_start = 5, timer_break = 5, provided_stretches : Array<Stretch>) {
+export function useRoutine(name: string, timer_start = 5, timer_break = 10, provided_stretches : Array<Stretch>) {
     const routine = ref(name)
     const started = ref(false)
     const paused = ref(false)

@@ -4,7 +4,7 @@ import type { GoogleSheetsApiResponse } from '~/types/GoogleSheetsAPIResponse'
 
 export const useStretchesStore = defineStore('stretches', () => {
     const stretches = ref<Array<Stretch>>([])
-    const restTimer = ref(12)
+    const restTimer = ref(10)
 
     const enabledStretches = computed(() => {
         return stretches.value.filter(x => x.enabled)
