@@ -194,6 +194,7 @@ export function useRoutine(name: string, timer_start = 5, timer_break = 10, prov
 
     function endStretching() {
         reset()
+        navigateTo('/')
     }
 
     function toggleStartState() {
